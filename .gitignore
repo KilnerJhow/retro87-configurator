@@ -1,0 +1,35 @@
+# --- Build output -------------------------------------------------------
+**/bin/
+**/obj/
+dist/
+*.user
+*.suo
+.vs/
+.idea/
+.vscode/
+
+# --- Local-only research material --------------------------------------
+# Everything that must never reach the remote lives under local/:
+# app-oficial/, decompiled/, reverse-engineering notes, analysis scripts,
+# captures, firmware and device dumps. See docs/PROVENANCE.md.
+local/
+
+# Design-tool workspace and UI captures: development only.
+.impeccable/
+analysis/
+
+# --- Legacy safety net (paths now live under local/) --------------------
+decompiled/
+app-oficial/
+HANDOFF.md
+*.pcapng
+*.pcap
+*.tsv
+*.ufw
+*.bin
+*.log
+retro87-report-*.toml
+
+# --- OS noise -----------------------------------------------------------
+.DS_Store
+Thumbs.db

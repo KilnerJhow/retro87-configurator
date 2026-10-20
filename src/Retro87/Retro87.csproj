@@ -1,0 +1,48 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net8.0</TargetFramework>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <LangVersion>latest</LangVersion>
+    <BuiltInComInteropSupport>true</BuiltInComInteropSupport>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>app.ico</ApplicationIcon>
+    <AvaloniaUseCompiledBindingsByDefault>true</AvaloniaUseCompiledBindingsByDefault>
+    <AssemblyName>Retro87</AssemblyName>
+    <RootNamespace>Retro87</RootNamespace>
+    <InvariantGlobalization>false</InvariantGlobalization>
+    <!-- Keep in sync with the repository's VERSION file (scripts/check_version.sh). -->
+    <Version>0.0.0</Version>
+    <AssemblyVersion>0.0.0.0</AssemblyVersion>
+    <FileVersion>0.0.0.0</FileVersion>
+    <InformationalVersion>0.0.0</InformationalVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Avalonia" Version="11.3.2" />
+    <PackageReference Include="Avalonia.Desktop" Version="11.3.2" />
+    <PackageReference Include="Avalonia.Svg.Skia" Version="11.3.0" />
+    <!-- Avalonia.Svg.Skia pulls NativeAssets.Linux 2.88.9, which is incompatible with SkiaSharp 3.116.1. -->
+    <PackageReference Include="SkiaSharp.NativeAssets.Linux" Version="3.116.1" />
+    <PackageReference Include="Avalonia.Themes.Fluent" Version="11.3.2" />
+    <PackageReference Include="Avalonia.Fonts.Inter" Version="11.3.2" />
+    <PackageReference Include="CommunityToolkit.Mvvm" Version="8.3.2" />
+    <!-- Cross-platform HID (Linux hidraw, Windows hid.dll, macOS) -->
+    <PackageReference Include="HidSharp" Version="2.6.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <AvaloniaResource Include="Brand/*.svg" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <None Update="app.manifest">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
+  <ItemGroup>
+    <InternalsVisibleTo Include="Retro87.Tests" />
+  </ItemGroup>
+</Project>

@@ -1,0 +1,412 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             x:Class="Retro87.App"
+             RequestedThemeVariant="Dark">
+
+    <!--
+      Own identity: deep slate gray, subtly raised surfaces, a single
+      amber accent ("instrument" readability), and no shine/gradient — deliberately
+      different from the look of the official software (dark, glossy, and "gamer").
+    -->
+    <Application.Resources>
+        <SolidColorBrush x:Key="Bg" Color="#0F1219" />
+        <SolidColorBrush x:Key="Surface" Color="#161A23" />
+        <SolidColorBrush x:Key="Surface2" Color="#1C212C" />
+        <SolidColorBrush x:Key="Line" Color="#262C39" />
+        <SolidColorBrush x:Key="LineSoft" Color="#1F2531" />
+        <SolidColorBrush x:Key="Fg" Color="#E7EAF2" />
+        <SolidColorBrush x:Key="FgDim" Color="#A6AEC2" />
+        <SolidColorBrush x:Key="FgMuted" Color="#8791A6" />
+        <SolidColorBrush x:Key="Accent" Color="#E9B04C" />
+        <SolidColorBrush x:Key="AccentHover" Color="#F2C066" />
+        <SolidColorBrush x:Key="AccentSoft" Color="#3A2F16" />
+        <SolidColorBrush x:Key="OnAccent" Color="#14171E" />
+        <SolidColorBrush x:Key="Ok" Color="#63D3A2" />
+        <SolidColorBrush x:Key="OkSoft" Color="#17382B" />
+        <SolidColorBrush x:Key="Warn" Color="#E9B04C" />
+        <SolidColorBrush x:Key="Danger" Color="#E4736A" />
+
+        <FontFamily x:Key="KeyFont">Consolas, DejaVu Sans Mono, Menlo, monospace</FontFamily>
+
+        <!-- Own accent instead of the default Fluent blue (selected tab, focus, selection). -->
+        <Color x:Key="SystemAccentColor">#E9B04C</Color>
+        <Color x:Key="SystemAccentColorDark1">#C69440</Color>
+        <Color x:Key="SystemAccentColorDark2">#A47A34</Color>
+        <Color x:Key="SystemAccentColorDark3">#826028</Color>
+        <Color x:Key="SystemAccentColorLight1">#F2C066</Color>
+        <Color x:Key="SystemAccentColorLight2">#F7D08C</Color>
+        <Color x:Key="SystemAccentColorLight3">#FBE0B4</Color>
+
+        <CornerRadius x:Key="ControlCornerRadius">8</CornerRadius>
+        <CornerRadius x:Key="OverlayCornerRadius">10</CornerRadius>
+    </Application.Resources>
+
+    <Application.Styles>
+        <FluentTheme />
+
+        <Style Selector="Window">
+            <Setter Property="Background" Value="{StaticResource Bg}" />
+            <Setter Property="FontSize" Value="13" />
+        </Style>
+
+        <!-- ================================================================ text -->
+        <Style Selector="TextBlock">
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+        </Style>
+        <Style Selector="TextBlock.dim">
+            <Setter Property="Foreground" Value="{StaticResource FgDim}" />
+        </Style>
+        <Style Selector="TextBlock.muted">
+            <Setter Property="Foreground" Value="{StaticResource FgMuted}" />
+        </Style>
+        <Style Selector="TextBlock.title">
+            <Setter Property="FontSize" Value="17" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+        </Style>
+        <Style Selector="TextBlock.section">
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Foreground" Value="{StaticResource FgMuted}" />
+            <Setter Property="Margin" Value="0,0,0,6" />
+        </Style>
+        <Style Selector="TextBlock.h1">
+            <Setter Property="FontSize" Value="20" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Margin" Value="0,0,0,4" />
+        </Style>
+        <Style Selector="TextBlock.hint">
+            <Setter Property="Foreground" Value="{StaticResource FgDim}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+        <Style Selector="TextBlock.key">
+            <Setter Property="FontFamily" Value="{StaticResource KeyFont}" />
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+        </Style>
+        <Style Selector="TextBlock.warn">
+            <Setter Property="Foreground" Value="{StaticResource Warn}" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+        </Style>
+        <Style Selector="TextBlock.ok">
+            <Setter Property="Foreground" Value="{StaticResource Ok}" />
+            <Setter Property="TextWrapping" Value="Wrap" />
+        </Style>
+
+        <!-- ================================================================ surfaces -->
+        <Style Selector="Border.card">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="10" />
+            <Setter Property="Padding" Value="14" />
+        </Style>
+        <Style Selector="Border.panel">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="10,8" />
+        </Style>
+        <!-- Well: notice, guidance, or empty state. 1 px border all around; a 2 px side bar
+             is forbidden (see DESIGN.md, Shapes). -->
+        <Style Selector="Border.note">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="10,8" />
+        </Style>
+        <Style Selector="Border.sep">
+            <Setter Property="Background" Value="{StaticResource Line}" />
+            <Setter Property="Height" Value="1" />
+            <Setter Property="Margin" Value="0,10" />
+        </Style>
+
+        <!-- ================================================================ buttons -->
+        <Style Selector="Button">
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="Padding" Value="12,8" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        </Style>
+        <Style Selector="Button:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Line}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        </Style>
+        <Style Selector="Button:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Surface}" />
+            <Setter Property="Opacity" Value="0.55" />
+        </Style>
+        <Style Selector="Button.primary">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+            <Setter Property="Foreground" Value="{StaticResource OnAccent}" />
+            <Setter Property="FontWeight" Value="SemiBold" />
+            <Setter Property="Padding" Value="16,9" />
+            <Setter Property="BorderThickness" Value="0" />
+        </Style>
+        <Style Selector="Button.primary:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentHover}" />
+        </Style>
+        <Style Selector="Button.primary:disabled /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+        </Style>
+        <Style Selector="Button.ghost">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{StaticResource FgDim}" />
+            <Setter Property="Padding" Value="10,7" />
+        </Style>
+        <Style Selector="Button.ghost:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+        </Style>
+        <Style Selector="Button.icon">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Foreground" Value="{StaticResource FgDim}" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="Width" Value="32" />
+            <Setter Property="Height" Value="32" />
+            <Setter Property="VerticalAlignment" Value="Center" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.icon:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Line}" />
+        </Style>
+
+        <!-- System icons: Path drawn at the same weight (Material filled, 24 → 16 px).
+             A font glyph never goes here. -->
+        <Style Selector="Path.iconGlyph">
+            <Setter Property="Width" Value="16" />
+            <Setter Property="Height" Value="16" />
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="Fill" Value="{StaticResource FgDim}" />
+        </Style>
+        <Style Selector="Button.icon:pointerover Path.iconGlyph">
+            <Setter Property="Fill" Value="{StaticResource Fg}" />
+        </Style>
+        <Style Selector="Button.icon:disabled Path.iconGlyph">
+            <Setter Property="Fill" Value="{StaticResource FgMuted}" />
+        </Style>
+
+        <!-- Status bar markers: a small drawn shape, not a font glyph. -->
+        <Style Selector="Arc.spinner">
+            <Setter Property="RenderTransformOrigin" Value="50%,50%" />
+            <Style.Animations>
+                <Animation Duration="0:0:0.9" IterationCount="Infinite">
+                    <KeyFrame Cue="0%"><Setter Property="RotateTransform.Angle" Value="0" /></KeyFrame>
+                    <KeyFrame Cue="100%"><Setter Property="RotateTransform.Angle" Value="360" /></KeyFrame>
+                </Animation>
+            </Style.Animations>
+        </Style>
+        <Style Selector="Path.statusMark">
+            <Setter Property="Width" Value="10" />
+            <Setter Property="Height" Value="10" />
+            <Setter Property="Stretch" Value="Uniform" />
+            <Setter Property="VerticalAlignment" Value="Top" />
+        </Style>
+        <Style Selector="Button.tiny">
+            <Setter Property="Padding" Value="9,5" />
+            <Setter Property="FontSize" Value="12" />
+            <Setter Property="Foreground" Value="{StaticResource FgDim}" />
+        </Style>
+
+        <!-- ============================================================ write lock -->
+        <!-- The lock is its own control, not a CheckBox: it is the step that unlocks Save. -->
+        <Style Selector="ToggleButton.lock">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="11,5" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="ToggleButton.lock:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        </Style>
+        <Style Selector="ToggleButton.lock:checked /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentSoft}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="ToggleButton.lock:checked:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentSoft}" />
+            <Setter Property="BorderBrush" Value="{StaticResource AccentHover}" />
+        </Style>
+        <Style Selector="ToggleButton.lock:disabled TextBlock.lockTitle">
+            <Setter Property="Foreground" Value="{StaticResource FgMuted}" />
+        </Style>
+        <Style Selector="ToggleButton.lock Path.lockIcon">
+            <Setter Property="Fill" Value="{StaticResource FgMuted}" />
+        </Style>
+        <Style Selector="ToggleButton.lock:checked Path.lockIcon">
+            <Setter Property="Fill" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="ToggleButton.lock TextBlock.lockTitle">
+            <Setter Property="Foreground" Value="{StaticResource FgDim}" />
+        </Style>
+        <Style Selector="ToggleButton.lock:checked TextBlock.lockTitle">
+            <Setter Property="Foreground" Value="{StaticResource Accent}" />
+        </Style>
+        <Style Selector="ToggleButton.lock TextBlock.lockHint">
+            <Setter Property="Foreground" Value="{StaticResource FgMuted}" />
+        </Style>
+        <Style Selector="ToggleButton.lock:checked TextBlock.lockHint">
+            <Setter Property="Foreground" Value="{StaticResource FgDim}" />
+        </Style>
+
+        <!-- ================================================================ inputs -->
+        <Style Selector="TextBox">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="Padding" Value="9,7" />
+        </Style>
+        <Style Selector="ComboBox">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="Padding" Value="9,6" />
+            <Setter Property="MinHeight" Value="0" />
+        </Style>
+        <Style Selector="NumericUpDown">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        </Style>
+        <Style Selector="ListBox">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="4" />
+        </Style>
+        <Style Selector="ListBoxItem">
+            <Setter Property="Padding" Value="9,7" />
+            <Setter Property="CornerRadius" Value="6" />
+        </Style>
+        <Style Selector="ListBoxItem:selected /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource AccentSoft}" />
+        </Style>
+        <Style Selector="ListBoxItem:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource LineSoft}" />
+        </Style>
+        <Style Selector="CheckBox">
+            <Setter Property="Foreground" Value="{StaticResource FgDim}" />
+        </Style>
+
+        <!-- ================================================================ tabs -->
+        <Style Selector="TabControl">
+            <Setter Property="Padding" Value="0" />
+        </Style>
+        <Style Selector="TabItem">
+            <Setter Property="FontSize" Value="13" />
+            <Setter Property="Padding" Value="14,9" />
+            <Setter Property="Foreground" Value="{StaticResource FgMuted}" />
+            <Setter Property="Margin" Value="0,0,4,0" />
+        </Style>
+        <Style Selector="TabItem:selected">
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+        </Style>
+        <Style Selector="TabItem:selected /template/ Border#PART_SelectedPipe">
+            <Setter Property="Background" Value="{StaticResource Accent}" />
+        </Style>
+
+        <!-- ================================================================ scrollbars -->
+        <!-- Scrolling is part of the surface: no auto-hide, a thumb in the palette tone instead of the
+             2 px hairline the inherited interface showed. -->
+        <Style Selector="ScrollBar">
+            <Setter Property="AllowAutoHide" Value="False" />
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="ScrollBar /template/ Thumb">
+            <Setter Property="Background" Value="{StaticResource Line}" />
+            <Setter Property="MinHeight" Value="32" />
+        </Style>
+        <Style Selector="ScrollBar /template/ Thumb:pointerover">
+            <Setter Property="Background" Value="{StaticResource FgMuted}" />
+        </Style>
+
+        <!-- ================================================================ drawn keyboard -->
+        <!-- A key is a button positioned by the board geometry (Views/KeyboardPanel.cs).
+             Normal: Bench Graphite + line. Modified: amber outline + dot. Selected:
+             Muted Amber (the only amber fill in the system). -->
+        <Style Selector="Button.keycap">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="0" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <!-- Fluent aligns the Button to the left and center: without this the key shrinks to its text
+                 instead of filling the box the KeyboardPanel hands it. -->
+            <Setter Property="HorizontalAlignment" Value="Stretch" />
+            <Setter Property="VerticalAlignment" Value="Stretch" />
+            <Setter Property="FontSize" Value="11" />
+            <Setter Property="FontFamily" Value="{StaticResource KeyFont}" />
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <!-- The state painting (modified / selected) comes from the view-model, in Background/BorderBrush:
+             in the Fluent template the dynamic class did not beat the theme here. -->
+        <Style Selector="Button.keycap:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Line}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        </Style>
+
+        <!-- The ten Super Buttons are not keys: they sit in the block below, behind the five connections. The pair
+             of the active connection shows in the cut-out, with the same states as a key. -->
+        <Style Selector="Button.superkey">
+            <Setter Property="Background" Value="{StaticResource Surface2}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="8" />
+            <Setter Property="Padding" Value="10,6" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="Foreground" Value="{StaticResource Fg}" />
+            <Setter Property="HorizontalContentAlignment" Value="Stretch" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.superkey:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Line}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        </Style>
+
+        <!-- Round button (port or Super Button): no frame; the circle drawn inside carries the state. -->
+        <Style Selector="Button.disc">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderThickness" Value="0" />
+            <Setter Property="Padding" Value="4" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.disc:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+        <Style Selector="Button.disc:pressed /template/ ContentPresenter">
+            <Setter Property="Background" Value="Transparent" />
+        </Style>
+
+        <!-- A keyboard connection, in the callout of the Super Buttons block: step 1. The state painting
+             (active or not) comes from the view-model, as with the keys. -->
+        <Style Selector="Button.chip">
+            <Setter Property="Background" Value="Transparent" />
+            <Setter Property="BorderBrush" Value="{StaticResource LineSoft}" />
+            <Setter Property="BorderThickness" Value="1" />
+            <Setter Property="CornerRadius" Value="6" />
+            <Setter Property="Padding" Value="9,4" />
+            <Setter Property="MinWidth" Value="0" />
+            <Setter Property="MinHeight" Value="0" />
+            <Setter Property="HorizontalContentAlignment" Value="Left" />
+            <Setter Property="VerticalContentAlignment" Value="Center" />
+        </Style>
+        <Style Selector="Button.chip:pointerover /template/ ContentPresenter">
+            <Setter Property="Background" Value="{StaticResource Line}" />
+            <Setter Property="BorderBrush" Value="{StaticResource Line}" />
+        </Style>
+    </Application.Styles>
+</Application>

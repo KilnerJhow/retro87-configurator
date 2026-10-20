@@ -1,0 +1,10 @@
+* text=auto
+
+*.rules text eol=lf
+*.sh text eol=lf
+*.cs text diff=csharp
+*.axaml text
+*.json text
+*.md text
+*.ico binary
+*.png binary

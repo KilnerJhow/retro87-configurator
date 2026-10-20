@@ -1,0 +1,65 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Retro87.ViewModels"
+             xmlns:loc="using:Retro87.Localization"
+             xmlns:m="using:Retro87.Models"
+             x:Class="Retro87.Views.SelectedKeyPanel"
+             x:DataType="vm:MainWindowViewModel">
+
+    <!-- Editor of the selected key: shown in a popover next to the key (the MainWindow Popup). -->
+    <Border Classes="card" Width="300" VerticalAlignment="Top" Margin="0,8"
+            BoxShadow="0 14 36 0 #AA000000, 0 2 6 0 #66000000"
+            IsVisible="{Binding SelectedKey, Converter={x:Static ObjectConverters.IsNotNull}}">
+        <StackPanel Spacing="14">
+            <Grid ColumnDefinitions="*,Auto">
+                <StackPanel Grid.Column="0" Spacing="4">
+                    <TextBlock Classes="h1" Text="{Binding SelectedKey.PanelTitle}" Margin="0" />
+                    <TextBlock Classes="muted key" FontSize="11" Text="{Binding SelectedKey.Detail}" />
+                </StackPanel>
+                <Button Grid.Column="1" Classes="icon" VerticalAlignment="Top"
+                        Command="{Binding ClearSelectionCommand}"
+                        AutomationProperties.Name="{loc:T clear_key_tip}"
+                        ToolTip.Tip="{loc:T clear_key_tip}">
+                    <Path Width="10" Height="10" Stretch="Uniform" Fill="{StaticResource FgDim}"
+                          Data="M2.1 1 5 3.9 7.9 1 9 2.1 6.1 5 9 7.9 7.9 9 5 6.1 2.1 9 1 7.9 3.9 5 1 2.1z" />
+                </Button>
+            </Grid>
+
+            <StackPanel Spacing="6">
+                <TextBlock Text="{loc:T on_press_sends}" FontWeight="SemiBold" />
+                <ComboBox HorizontalAlignment="Stretch"
+                          AutomationProperties.Name="{loc:T type}"
+                          ItemsSource="{Binding SelectedKey.Categories}"
+                          SelectedItem="{Binding SelectedKey.SelectedCategory}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="m:CategoryOption">
+                            <TextBlock Text="{Binding Label}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <ComboBox HorizontalAlignment="Stretch"
+                          AutomationProperties.Name="{loc:T subtype}"
+                          IsVisible="{Binding SelectedKey.HasSubtype}"
+                          ItemsSource="{Binding SelectedKey.SubTargets}"
+                          SelectedItem="{Binding SelectedKey.SelectedTarget}">
+                    <ComboBox.ItemTemplate>
+                        <DataTemplate x:DataType="m:MappingTarget">
+                            <TextBlock Text="{Binding Label}" />
+                        </DataTemplate>
+                    </ComboBox.ItemTemplate>
+                </ComboBox>
+                <TextBlock Classes="hint" FontSize="12" TextWrapping="Wrap"
+                           Text="{loc:T local_edit_hint}" />
+            </StackPanel>
+
+            <StackPanel Spacing="8">
+                <Button Content="{Binding SelectedKey.RestoreLabel}" HorizontalAlignment="Left"
+                        Command="{Binding SelectedKey.RestoreDefaultCommand}"
+                        IsEnabled="{Binding SelectedKey.IsModified}"
+                        AutomationProperties.Name="{Binding SelectedKey.RestoreLabel}"
+                        ToolTip.Tip="{Binding SelectedKey.RestoreTooltip}" />
+            </StackPanel>
+        </StackPanel>
+    </Border>
+</UserControl>

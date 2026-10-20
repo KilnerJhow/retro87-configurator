@@ -1,0 +1,24 @@
+# 8BitDo Retro 87 (VID 0x2DC8): allow the active desktop session to open the
+# kernel's hidraw nodes without running as root or joining a group.
+#
+# The file name matters. TAG+="uaccess" is only turned into an ACL for the
+# logged-in user by systemd's 73-seat-late.rules, so a rule in a 99-*.rules
+# file sets the tag after that step and silently grants nothing. Keep this
+# file sorting before 73 (this one sorts as 70).
+#
+# Install:
+#   sudo install -m 0644 packaging/linux/70-8bitdo.rules /etc/udev/rules.d/70-8bitdo.rules
+#   sudo udevadm control --reload-rules
+#   sudo udevadm trigger
+# Then unplug and reconnect the keyboard (or reboot).
+
+# USB: cable and the 2.4 G dongle.
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2dc8", TAG+="uaccess"
+
+# Bluetooth: the HID device id is bus:vendor:product (e.g. 0005:2DC8:2028).
+KERNEL=="hidraw*", SUBSYSTEM=="hidraw", KERNELS=="*:2DC8:*", TAG+="uaccess"
+
+# Fallback for systems without systemd-logind, where uaccess is unavailable.
+# It opens the device to any local user; broader than uaccess, but independent
+# of rule ordering. Uncomment only if the rules above do not fix the problem.
+# KERNEL=="hidraw*", SUBSYSTEM=="hidraw", ATTRS{idVendor}=="2dc8", MODE="0666"

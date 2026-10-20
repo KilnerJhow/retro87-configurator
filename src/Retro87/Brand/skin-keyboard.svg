@@ -1,0 +1,57 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="336" viewBox="0 0 900 336">
+  <defs>
+    <clipPath id="plate">
+      <rect x="0" y="0" width="900" height="336" rx="12" />
+    </clipPath>
+    <pattern id="grid" width="46" height="46" patternUnits="userSpaceOnUse">
+      <path d="M46 0H0V46" fill="none" stroke="#1B202A" stroke-width="1" />
+    </pattern>
+  </defs>
+
+  <g clip-path="url(#plate)">
+    <rect width="900" height="336" fill="#12161F" />
+    <rect y="30" width="900" height="306" fill="url(#grid)" opacity="0.55" />
+
+    <!-- identification strip: visible above the keys -->
+    <rect width="900" height="30" fill="#161B25" />
+    <path d="M0 30H900" stroke="#E9B04C" stroke-opacity="0.35" />
+    <text x="18" y="20" fill="#E7EAF2" font-family="sans-serif" font-size="12" font-weight="700" letter-spacing="2">RETRO 87</text>
+    <text x="112" y="20" fill="#8791A6" font-family="sans-serif" font-size="7.5" letter-spacing="1.6">CALIBRATION PLATE</text>
+    <text x="770" y="20" fill="#E9B04C" font-family="monospace" font-size="8" letter-spacing="1">X // SERIES 01</text>
+
+    <!-- emblema angular original -->
+    <g transform="translate(860 15)" stroke="#E9B04C" fill="none" stroke-width="1.2">
+      <path d="M0 -9 L8 -4.5 V4.5 L0 9 L-8 4.5 V-4.5 Z" opacity="0.55" />
+      <path d="M0 -4 L3.5 -2 V2 L0 4 L-3.5 2 V-2 Z" opacity="0.9" />
+    </g>
+
+    <!-- cantoneiras -->
+    <g stroke="#E9B04C" stroke-width="1.4" opacity="0.55" fill="none">
+      <path d="M12 46V12H44" />
+      <path d="M856 12H888V46" />
+      <path d="M12 324V290H44" />
+      <path d="M856 324H888V290" />
+    </g>
+
+    <!-- subtle angular texture behind the keys -->
+    <g stroke="#E9B04C" stroke-opacity="0.07" fill="none" stroke-width="1">
+      <path d="M120 300 L240 58 L360 300 Z" />
+      <path d="M540 300 L660 58 L780 300 Z" />
+      <path d="M330 300 L450 86 L570 300 Z" />
+    </g>
+
+    <!-- calibration rulers/ticks on the edges -->
+    <g stroke="#8791A6" stroke-opacity="0.4" stroke-width="1">
+      <path d="M60 12V18 M80 12V16 M100 12V18 M120 12V16 M140 12V18 M160 12V16" />
+      <path d="M60 324V318 M80 324V320 M100 324V318 M120 324V320 M140 324V318 M160 324V320" />
+      <path d="M12 70H18 M12 90H16 M12 110H18 M12 130H16 M12 150H18 M12 170H16" />
+      <path d="M888 70H882 M888 90H884 M888 110H882 M888 130H884 M888 150H882 M888 170H884" />
+    </g>
+
+    <!-- linha de base do instrumento -->
+    <path d="M30 318H870" stroke="#E9B04C" stroke-opacity="0.18" />
+  </g>
+
+  <rect x="0.5" y="0.5" width="899" height="335" rx="12" fill="none" stroke="#262C39" />
+</svg>
