@@ -30,6 +30,13 @@ public interface IKeyboardTransport : IDisposable
     /// <summary>Writes an output report. Returns bytes written, 0 on failure.</summary>
     int Write(byte[] buffer);
 
-    /// <summary>Reads an input report. Returns bytes read, 0 on failure.</summary>
+    /// <summary>Reads an input report. Returns bytes read, 0 on failure or when nothing arrived in time.</summary>
     int Read(byte[] buffer);
+
+    /// <summary>
+    /// Why the last call returned 0 when the cause was an I/O error (device unplugged, permission
+    /// lost), or null after a call that worked or only timed out. Lets the protocol tell "the
+    /// keyboard did not answer" from "the operating system refused".
+    /// </summary>
+    string? LastError => null;
 }

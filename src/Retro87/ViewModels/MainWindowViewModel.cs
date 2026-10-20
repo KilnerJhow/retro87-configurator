@@ -566,6 +566,14 @@ public partial class MainWindowViewModel : ObservableObject
     {
         _window = window;
         _monitor.Start();
+        window.Closing += (_, e) =>
+        {
+            // Closing disposes the protocol while the write thread may still be sending chunks:
+            // the keyboard would keep a configuration that is half the old one and half the new.
+            if (!_writing) return;
+            e.Cancel = true;
+            SetStatus(StatusSeverity.Warning, Loc.T("st_close_while_writing"));
+        };
         window.Closed += (_, _) =>
         {
             Dispose();
@@ -582,6 +590,9 @@ public partial class MainWindowViewModel : ObservableObject
         if (value is null) return;
         _monitor.Select(value);
     }
+
+    /// <summary>True while a write is in flight; the window refuses to close meanwhile.</summary>
+    private bool _writing;
 
     /// <summary>HID paths of the keyboard the current session was opened on (what a restart takes away).</summary>
     private HashSet<string> _connectedPaths = new(StringComparer.OrdinalIgnoreCase);

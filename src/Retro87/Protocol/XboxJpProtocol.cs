@@ -447,10 +447,12 @@ public sealed class XboxJpProtocol : IJpProtocol, IWriteDiagnostics
     {
         payload = Array.Empty<byte>();
         LastError = null;
+        string? ioError = null;
         for (int attempt = 0; attempt < XboxWire.MaxAttempts; attempt++)
         {
             if (!SendRequest(cmd, subtype, offset, data, length))
             {
+                ioError = _transport.LastError ?? ioError;
                 Trace?.Invoke($"cmd 0x{cmd:X2} sub {subtype} off {offset}: failed to send (attempt {attempt + 1})");
                 continue;
             }
@@ -463,6 +465,7 @@ public sealed class XboxJpProtocol : IJpProtocol, IWriteDiagnostics
             {
                 if (!TryReadReply(cmd, offset, data, out byte[] reply, out string why))
                 {
+                    if (_transport.LastError is { } readError) ioError = readError;
                     if (why.StartsWith("no answer")) timeouts++;
                     else repeats++;
                     if (why.StartsWith("device error"))
@@ -495,7 +498,9 @@ public sealed class XboxJpProtocol : IJpProtocol, IWriteDiagnostics
                           $"{XboxWire.ReplyWaitMs} ms ({repeats} repeated, {timeouts} timeout(s)); " +
                           $"resending (attempt {attempt + 1})");
         }
-        LastError ??= $"cmd 0x{cmd:X2}: no answer after {XboxWire.MaxAttempts} attempts";
+        LastError ??= ioError is null
+            ? $"cmd 0x{cmd:X2}: no answer after {XboxWire.MaxAttempts} attempts"
+            : $"cmd 0x{cmd:X2}: I/O error ({ioError}) after {XboxWire.MaxAttempts} attempts";
         Trace?.Invoke($"cmd 0x{cmd:X2} sub {subtype} off {offset}: GAVE UP — {LastError}");
         return false;
     }

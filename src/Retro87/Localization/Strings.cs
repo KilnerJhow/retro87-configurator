@@ -204,6 +204,7 @@ internal static class Strings
         ["st_read_before_write"] = ("Leia a configuração do teclado (ou carregue um perfil) antes de gravar: a tela ainda não tem os valores do aparelho.", "Read the keyboard configuration (or load a profile) before writing: the screen does not have the device values yet."),
         ["st_writing"] = ("Gravando a configuração no teclado…", "Writing the configuration to the keyboard…"),
         ["st_backup_failed"] = ("Gravação cancelada: não consegui salvar o backup ({0}).", "Write cancelled: could not save the backup ({0})."),
+        ["st_close_while_writing"] = ("Aguarde a gravação terminar antes de fechar: fechar agora deixaria a configuração do teclado pela metade.", "Wait for the write to finish before closing: closing now would leave the keyboard's configuration half written."),
         ["st_write_unconfirmed"] = ("Falha ao gravar: o teclado não confirmou todas as escritas.", "Write failed: the keyboard did not confirm all the writes."),
         ["st_written"] = ("Configuração gravada no teclado.", "Configuration written to the keyboard."),
         ["st_written_backup"] = ("Configuração gravada no teclado. Backup em {0}.", "Configuration written to the keyboard. Backup in {0}."),

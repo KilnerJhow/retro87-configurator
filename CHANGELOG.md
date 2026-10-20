@@ -7,6 +7,11 @@ adheres to [Semantic Versioning](https://semver.org/). The first version is `0.0
 
 ## [Unreleased]
 
+### Fixed
+
+- A write or read the operating system refuses (device unplugged, permission lost) is now reported as an I/O error with the system message, instead of "no answer" from the keyboard.
+- Closing the window while a write is running is refused until it finishes; closing used to cut the write and leave the keyboard half configured.
+
 ### Changed
 
 - The self-test, the bench probes (`--xbox-*`) and the simulated devices moved out of the app into `tools/Retro87.Bench`. Run them with `dotnet run --project tools/Retro87.Bench -- --selftest`. The app itself only keeps `--version`, `--help`, `--report` and `--make-icon`.

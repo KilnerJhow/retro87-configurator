@@ -79,6 +79,7 @@ public partial class MainWindowViewModel
 
         var protocol = _protocol;
         IsBusy = true;
+        _writing = true;
         SetStatus(StatusSeverity.Info, Loc.T("st_writing"));
         try
         {
@@ -129,6 +130,7 @@ public partial class MainWindowViewModel
         }
         finally
         {
+            _writing = false;
             IsBusy = false;
         }
     }

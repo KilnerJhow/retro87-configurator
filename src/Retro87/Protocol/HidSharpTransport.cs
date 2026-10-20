@@ -23,6 +23,8 @@ public sealed class HidSharpTransport : IKeyboardTransport
 
     public bool IsOpen => _stream is not null;
 
+    public string? LastError { get; private set; }
+
     public int MaxFeatureReportLength { get; }
     public int MaxInputReportLength { get; }
     public int MaxOutputReportLength { get; }
@@ -30,6 +32,7 @@ public sealed class HidSharpTransport : IKeyboardTransport
     public bool Open()
     {
         if (_stream is not null) return true;
+        LastError = null;
         try
         {
             if (_device.TryOpen(out var stream))
@@ -50,9 +53,10 @@ public sealed class HidSharpTransport : IKeyboardTransport
                 return true;
             }
         }
-        catch (Exception)
+        catch (Exception ex)
         {
             // Reported as failure; the UI decides what to tell the user.
+            LastError = ex.Message;
         }
         return false;
     }
@@ -63,32 +67,38 @@ public sealed class HidSharpTransport : IKeyboardTransport
         _stream = null;
     }
 
-    public int SetFeatureReport(byte[] buffer)
-    {
-        if (_stream is null) return 0;
-        try { _stream.SetFeature(buffer); return buffer.Length; }
-        catch (Exception) { return 0; }
-    }
+    public int SetFeatureReport(byte[] buffer) => Run(() => { _stream!.SetFeature(buffer); return buffer.Length; });
 
-    public int GetFeatureReport(byte[] buffer)
-    {
-        if (_stream is null) return 0;
-        try { _stream.GetFeature(buffer); return buffer.Length; }
-        catch (Exception) { return 0; }
-    }
+    public int GetFeatureReport(byte[] buffer) => Run(() => { _stream!.GetFeature(buffer); return buffer.Length; });
 
-    public int Write(byte[] buffer)
-    {
-        if (_stream is null) return 0;
-        try { _stream.Write(buffer); return buffer.Length; }
-        catch (Exception) { return 0; }
-    }
+    public int Write(byte[] buffer) => Run(() => { _stream!.Write(buffer); return buffer.Length; });
 
-    public int Read(byte[] buffer)
+    public int Read(byte[] buffer) => Run(() => _stream!.Read(buffer));
+
+    /// <summary>
+    /// Runs one stream call. A timeout is the normal "nothing arrived" and returns 0 quietly; any
+    /// other exception returns 0 too (the protocol retries), but keeps its message in
+    /// <see cref="LastError"/> so a dead handle is not mistaken for a silent keyboard.
+    /// </summary>
+    private int Run(Func<int> call)
     {
         if (_stream is null) return 0;
-        try { return _stream.Read(buffer); }
-        catch (Exception) { return 0; }
+        try
+        {
+            int result = call();
+            LastError = null;
+            return result;
+        }
+        catch (TimeoutException)
+        {
+            LastError = null;
+            return 0;
+        }
+        catch (Exception ex)
+        {
+            LastError = ex.Message;
+            return 0;
+        }
     }
 
     public void Dispose() => Close();
