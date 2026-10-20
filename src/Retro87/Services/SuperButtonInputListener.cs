@@ -1,8 +1,8 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using HidSharp;
-using Retro87.Models;
 using Retro87.Localization;
+using Retro87.Models;
 
 namespace Retro87.Services;
 

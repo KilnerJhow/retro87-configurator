@@ -9,10 +9,10 @@ using Avalonia.Threading;
 using CommunityToolkit.Mvvm.ComponentModel;
 using CommunityToolkit.Mvvm.Input;
 using HidSharp;
+using Retro87.Localization;
 using Retro87.Models;
 using Retro87.Protocol;
 using Retro87.Services;
-using Retro87.Localization;
 
 namespace Retro87.ViewModels;
 

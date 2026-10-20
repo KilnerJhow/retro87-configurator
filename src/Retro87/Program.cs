@@ -1,9 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
-using Avalonia;
 using System;
 using System.Linq;
 using System.Reflection;
+using Avalonia;
 
 namespace Retro87;
 

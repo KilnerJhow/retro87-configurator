@@ -4,8 +4,8 @@ using Avalonia;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
 using Avalonia.Headless.XUnit;
-using Retro87.Protocol;
 using Avalonia.VisualTree;
+using Retro87.Protocol;
 
 namespace Retro87.Tests.Screens;
 
