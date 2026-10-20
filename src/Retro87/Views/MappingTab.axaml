@@ -1,0 +1,278 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Retro87.ViewModels"
+             xmlns:loc="using:Retro87.Localization"
+             xmlns:m="using:Retro87.Models"
+             xmlns:svc="using:Retro87.Services"
+             xmlns:views="using:Retro87.Views"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             x:Class="Retro87.Views.MappingTab"
+             x:DataType="vm:MainWindowViewModel">
+
+    <!-- Row 0 is star: without it the ScrollViewer takes the height of its content, overflows the
+         window and no scrolling is left (the outer Grid does not scroll). -->
+    <Grid Margin="8,12" RowDefinitions="*,Auto">
+        <ScrollViewer Grid.Row="0"
+                      VerticalScrollBarVisibility="Auto"
+                      HorizontalScrollBarVisibility="Disabled">
+        <StackPanel Spacing="8" Margin="0,0,18,0">
+            <Grid ColumnDefinitions="Auto,*,Auto">
+                <TextBlock Grid.Column="0" Classes="h1" Text="{loc:T keys}" />
+                <TextBlock Grid.Column="1" Classes="muted" FontSize="12"
+                           HorizontalAlignment="Right" VerticalAlignment="Center"
+                           Margin="0,0,8,0"
+                           Text="{Binding MappingSummary}" IsVisible="{Binding HasMappings}" />
+                <Button Grid.Column="2" Classes="ghost" Content="{loc:T restore_all}"
+                        IsVisible="{Binding HasMappings}"
+                        Command="{Binding RestoreAllMappingsCommand}"
+                        ToolTip.Tip="{loc:T restore_all_tip}" />
+            </Grid>
+
+            <Border Classes="note" IsVisible="{Binding IsMappingEmpty}">
+                <StackPanel Spacing="4">
+                    <TextBlock Classes="dim" FontWeight="SemiBold" FontSize="12"
+                               Text="{loc:T nothing_read}" />
+                    <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap"
+                               Text="{loc:T mapping_empty_hint}" />
+                </StackPanel>
+            </Border>
+
+            <!-- the drawn keyboard: each key is a button positioned by the board geometry.
+                 The original artwork sits in a strip above, without covering the keycaps. -->
+            <Border x:Name="BoardCard" Classes="card" Padding="8" IsVisible="{Binding !IsMappingEmpty}">
+                <StackPanel Spacing="8" MaxWidth="900" HorizontalAlignment="Center">
+                    <svg:Svg Path="/Brand/skin-keyboard-header.svg" Height="54"
+                             Stretch="Fill" IsHitTestVisible="False" />
+                    <ItemsControl x:Name="KeysItems" ItemsSource="{Binding Keys}">
+                        <ItemsControl.ItemsPanel>
+                            <ItemsPanelTemplate>
+                                <views:KeyboardPanel Unit="46" Gap="2" />
+                            </ItemsPanelTemplate>
+                        </ItemsControl.ItemsPanel>
+                        <ItemsControl.ItemTemplate>
+                            <DataTemplate x:DataType="vm:MappingRowViewModel">
+                                <Button Classes="keycap"
+                                        Background="{Binding KeyBackground}"
+                                        BorderBrush="{Binding KeyBorder}"
+                                        Command="{Binding SelectCommand}"
+                                        AutomationProperties.Name="{Binding AutomationName}"
+                                        ToolTip.Tip="{Binding MappingTooltip}">
+                                    <TextBlock Text="{Binding KeyCapLabel}" />
+                                </Button>
+                            </DataTemplate>
+                        </ItemsControl.ItemTemplate>
+                    </ItemsControl>
+                </StackPanel>
+            </Border>
+
+            <!-- The ten Super Buttons behind the connections: step 1 picks the connection, step 2
+                 picks the button of the pair. The dashed frame is the callout (see DESIGN.md). -->
+            <Border Classes="card" Padding="10" IsVisible="{Binding !IsMappingEmpty}">
+                <StackPanel Spacing="8">
+                    <Grid ColumnDefinitions="*,Auto">
+                        <TextBlock Classes="section" Text="{loc:T super_buttons_header}" Margin="0"
+                                   VerticalAlignment="Center" />
+                        <Button Grid.Column="1" Classes="ghost"
+                                Content="{Binding PortStyleLabel}"
+                                Command="{Binding TogglePortStyleCommand}"
+                                ToolTip.Tip="{loc:T port_style_tip}" />
+                    </Grid>
+                    <Grid ColumnDefinitions="Auto,*">
+                        <!-- the four ports, round as in the official app: they light up when the button is pressed -->
+                        <Border Grid.Column="0" Classes="note" Padding="14,10">
+                            <ItemsControl ItemsSource="{Binding SuperPorts}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="14" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:SuperConnectionViewModel">
+                                        <Button Classes="disc"
+                                                Command="{Binding SelectCommand}"
+                                                AutomationProperties.Name="{Binding AutomationName}"
+                                                ToolTip.Tip="{Binding Tooltip}">
+                                            <StackPanel Spacing="6" HorizontalAlignment="Center">
+                                                <Panel Height="18" HorizontalAlignment="Center">
+                                                    <TextBlock Text="{Binding Name}" FontSize="14"
+                                                               FontWeight="SemiBold"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"
+                                                               Foreground="{Binding ChipNameBrush}"
+                                                               IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNull}}" />
+                                                    <Viewbox Width="16" Height="16"
+                                                             IsVisible="{Binding Icon, Converter={x:Static ObjectConverters.IsNotNull}}">
+                                                        <Panel Width="16" Height="16">
+                                                            <Path Data="{Binding IconFill}"
+                                                                  Fill="{Binding ChipNameBrush}" />
+                                                            <Path Data="{Binding IconLines}"
+                                                                  Stroke="{Binding ChipNameBrush}"
+                                                                  StrokeThickness="1.5"
+                                                                  StrokeJoin="Miter" />
+                                                        </Panel>
+                                                    </Viewbox>
+                                                </Panel>
+                                                <Grid Width="56" Height="56">
+                                                    <Ellipse Fill="{Binding JackFill}"
+                                                             Stroke="{Binding JackRing}"
+                                                             StrokeThickness="{Binding JackRingWidth}"
+                                                             Margin="2" />
+                                                    <Ellipse Width="22" Height="22"
+                                                             Fill="{StaticResource Bg}"
+                                                             Stroke="{Binding JackRing}"
+                                                             StrokeThickness="1" />
+                                                </Grid>
+                                                <StackPanel Orientation="Horizontal" Spacing="8"
+                                                            HorizontalAlignment="Center">
+                                                    <Ellipse Width="7" Height="7" Fill="{Binding FirstDot}" />
+                                                    <Ellipse Width="7" Height="7" Fill="{Binding SecondDot}" />
+                                                </StackPanel>
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                        </Border>
+                        <StackPanel Grid.Column="1" VerticalAlignment="Center" Margin="22,0,0,0" Spacing="8">
+                    <!-- step 1: the connection -->
+                    <Grid>
+                        <StackPanel Orientation="Horizontal" Spacing="10"
+                                    VerticalAlignment="Center"
+                                    IsVisible="{Binding IsConnectionStepVisible}">
+                            <Line StartPoint="0,0" EndPoint="26,0" Width="26" Height="1"
+                                  Stroke="{StaticResource FgMuted}" StrokeThickness="1"
+                                  StrokeDashArray="3,3" VerticalAlignment="Center" />
+                            <TextBlock Classes="muted" FontSize="11"
+                                       Text="{loc:T super_step1}" />
+                        </StackPanel>
+                    </Grid>
+
+                    <!-- step 2: the pair of the chosen connection, cut out. The cut-out only exists
+                         after the choice; the frame withdraws once the button is chosen. -->
+                    <Grid ColumnDefinitions="Auto,*"
+                          IsVisible="{Binding IsPairVisible}">
+                        <Grid Grid.Column="0">
+                            <ItemsControl x:Name="PairItems" ItemsSource="{Binding SuperPair}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <StackPanel Orientation="Horizontal" Spacing="4" />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MappingRowViewModel">
+                                        <Button Classes="disc"
+                                                Width="120"
+                                                Command="{Binding SelectCommand}"
+                                                AutomationProperties.Name="{Binding AutomationName}"
+                                                ToolTip.Tip="{Binding MappingTooltip}">
+                                            <StackPanel Spacing="4" HorizontalAlignment="Center">
+                                                <Grid Width="64" Height="64" HorizontalAlignment="Center">
+                                                    <Ellipse Fill="{Binding DiscFill}"
+                                                             Stroke="{Binding DiscRing}"
+                                                             StrokeThickness="3" Margin="2" />
+                                                    <TextBlock Text="+" FontSize="30"
+                                                               Foreground="{StaticResource Fg}"
+                                                               HorizontalAlignment="Center"
+                                                               VerticalAlignment="Center"
+                                                               IsVisible="{Binding HasNoTarget}" />
+                                                    <Ellipse Width="7" Height="7"
+                                                             Fill="{StaticResource Accent}"
+                                                             HorizontalAlignment="Right"
+                                                             VerticalAlignment="Top"
+                                                             IsVisible="{Binding IsModified}" />
+                                                </Grid>
+                                                <TextBlock Text="{Binding KeyName}" FontSize="12"
+                                                           FontWeight="SemiBold"
+                                                           HorizontalAlignment="Center" />
+                                                <TextBlock FontSize="10" HorizontalAlignment="Center"
+                                                           Foreground="{Binding MappingBrush}"
+                                                           Text="{Binding MappingName}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+
+                            <Rectangle IsHitTestVisible="False"
+                                       IsVisible="{Binding IsPairStepVisible}"
+                                       Stroke="{StaticResource FgMuted}" StrokeThickness="1"
+                                       StrokeDashArray="3,3" RadiusX="9" RadiusY="9"
+                                       Margin="-6" />
+                        </Grid>
+
+                        <StackPanel Grid.Column="1" Orientation="Horizontal" Spacing="10"
+                                    VerticalAlignment="Center" Margin="12,0,0,0"
+                                    IsVisible="{Binding IsPairStepVisible}">
+                            <Line StartPoint="0,0" EndPoint="26,0" Width="26" Height="1"
+                                  Stroke="{StaticResource FgMuted}" StrokeThickness="1"
+                                  StrokeDashArray="3,3" VerticalAlignment="Center" />
+                            <TextBlock Classes="muted" FontSize="11" Text="{Binding PairStepText}" />
+                        </StackPanel>
+                    </Grid>
+                        </StackPanel>
+                    </Grid>
+
+                    <TextBlock Classes="warn" FontSize="11" TextWrapping="Wrap"
+                               IsVisible="{Binding IsListeningForSuperButton}"
+                               Text="{loc:T super_listening}" />
+
+                    <!-- last identified button: the port shows with the Mecha Break symbol -->
+                    <Border Classes="note" IsVisible="{Binding HasSuperButtonPress}"
+                            Margin="0,2,0,0" Padding="10,7">
+                        <TextBlock FontSize="11" TextWrapping="Wrap"
+                                   Text="{Binding LastSuperButtonText}" />
+                    </Border>
+
+                    <!-- identification question: covers the case of two buttons with the same
+                         target (two ports on Play/Pause) or a key that could not be read -->
+                    <Border Classes="note" IsVisible="{Binding IsAskingSuperButton}"
+                            Margin="0,4,0,0">
+                        <StackPanel Spacing="8">
+                            <TextBlock Classes="warn" FontSize="12" FontWeight="SemiBold"
+                                       TextWrapping="Wrap" Text="{Binding SuperButtonQuestion}" />
+                            <TextBlock Classes="hint" FontSize="11" TextWrapping="Wrap"
+                                       Text="{loc:T super_pick}" />
+                            <ItemsControl ItemsSource="{Binding SuperButtonChoices}">
+                                <ItemsControl.ItemsPanel>
+                                    <ItemsPanelTemplate>
+                                        <WrapPanel />
+                                    </ItemsPanelTemplate>
+                                </ItemsControl.ItemsPanel>
+                                <ItemsControl.ItemTemplate>
+                                    <DataTemplate x:DataType="vm:MappingRowViewModel">
+                                        <Button Classes="chip" Margin="0,0,6,6"
+                                                Command="{Binding SelectCommand}"
+                                                ToolTip.Tip="{Binding Detail}">
+                                            <StackPanel Spacing="0">
+                                                <TextBlock Text="{Binding KeyName}"
+                                                           FontSize="11" FontWeight="SemiBold" />
+                                                <TextBlock Classes="key" FontSize="10"
+                                                           Foreground="{StaticResource FgMuted}"
+                                                           Text="{Binding MappingName}" />
+                                                <TextBlock Classes="muted" FontSize="9"
+                                                           Text="{Binding Detail}" />
+                                            </StackPanel>
+                                        </Button>
+                                    </DataTemplate>
+                                </ItemsControl.ItemTemplate>
+                            </ItemsControl>
+                            <Button Classes="ghost" Content="{loc:T cancel}"
+                                    HorizontalAlignment="Left"
+                                    Command="{Binding CancelSuperButtonQuestionCommand}" />
+                        </StackPanel>
+                    </Border>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+        </ScrollViewer>
+
+        <!-- Key editor: a popover next to the clicked key, as in the official app. The
+             MainWindow.axaml.cs points the PlacementTarget at the selected key. -->
+        <Popup x:Name="KeyPopup" Placement="Bottom"
+               IsLightDismissEnabled="True" OverlayDismissEventPassThrough="True">
+            <views:SelectedKeyPanel />
+        </Popup>
+
+    </Grid>
+</UserControl>

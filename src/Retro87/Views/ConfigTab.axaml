@@ -1,0 +1,72 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Retro87.ViewModels"
+             xmlns:loc="using:Retro87.Localization"
+             xmlns:m="using:Retro87.Models"
+             xmlns:svc="using:Retro87.Services"
+             xmlns:views="using:Retro87.Views"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             x:Class="Retro87.Views.ConfigTab"
+             x:DataType="vm:MainWindowViewModel">
+
+    <ScrollViewer>
+        <StackPanel Margin="8,12" Spacing="12">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="{loc:T config_title}" />
+                <TextBlock Classes="muted" FontSize="12"
+                           Text="{loc:T config_hint}" />
+            </StackPanel>
+
+            <Border Classes="note" IsVisible="{Binding IsFamilyUnknown}">
+                <TextBlock Classes="hint" FontSize="12"
+                           Text="{loc:T config_empty_hint}" />
+            </Border>
+
+            <!-- JP family -->
+            <Border Classes="card" IsVisible="{Binding IsJpFamily}">
+                <StackPanel Spacing="14">
+                    <StackPanel Spacing="6">
+                        <TextBlock Classes="section" Text="{loc:T special_feature_header}" Margin="0" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <NumericUpDown Value="{Binding SpecialFeature}" Minimum="0" Maximum="255"
+                                           FormatString="0" Width="130" />
+                            <TextBlock Classes="hint" VerticalAlignment="Center" FontSize="12"
+                                       Text="{loc:T byte_hint}" />
+                        </StackPanel>
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+
+            <!-- Xbox family (Retro 87 X) -->
+            <Border Classes="card" IsVisible="{Binding IsXboxFamily}">
+                <StackPanel Spacing="14">
+
+                    <StackPanel Spacing="6">
+                        <TextBlock Text="{loc:T volume}" FontWeight="SemiBold" />
+                        <StackPanel Orientation="Horizontal" Spacing="10">
+                            <NumericUpDown Value="{Binding XboxVolumeLevel}" Minimum="0" Maximum="5"
+                                           FormatString="0" Width="130" />
+                            <TextBlock Classes="hint" VerticalAlignment="Center" FontSize="12"
+                                       Text="{loc:T volume_hint}" />
+                        </StackPanel>
+                    </StackPanel>
+
+                    <Border Classes="sep" />
+
+                    <StackPanel Spacing="8">
+                        <TextBlock Text="{loc:T quick_setup}" FontWeight="SemiBold" />
+                        <TextBlock Classes="hint" FontSize="12" TextWrapping="Wrap"
+                                   Text="{loc:T quick_setup_hint}" />
+                        <CheckBox Content="{loc:T disable_win}"
+                                  IsChecked="{Binding XboxDisableWindowsKey}" />
+                        <CheckBox Content="{loc:T disable_alt_tab}"
+                                  IsChecked="{Binding XboxDisableAltTab}" />
+                        <CheckBox Content="{loc:T disable_alt_f4}"
+                                  IsChecked="{Binding XboxDisableAltF4}" />
+                    </StackPanel>
+                </StackPanel>
+            </Border>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>

@@ -19,6 +19,7 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        Mapping.KeyPopup.Closed += OnKeyPopupClosed;
 
         // Tunnel so a Super Button mapped to a shortcut (Ctrl+L, F5, …) is captured by the
         // listener before the window's KeyBindings act on it.
@@ -56,17 +57,17 @@ public partial class MainWindow : Window
         _repositioning = true;
         try
         {
-            KeyPopup.IsOpen = false;
+            Mapping.KeyPopup.IsOpen = false;
             if (selected is null) return;
 
             // Keys and the Super Button pair live in different lists; anything else (the choice chips of
             // the identification question) falls back to the board card so the balloon still appears.
-            Control? target = KeysItems.ContainerFromItem(selected)
-                              ?? PairItems.ContainerFromItem(selected)
-                              ?? BoardCard;
-            KeyPopup.PlacementTarget = target;
+            Control? target = Mapping.KeysItems.ContainerFromItem(selected)
+                              ?? Mapping.PairItems.ContainerFromItem(selected)
+                              ?? Mapping.BoardCard;
+            Mapping.KeyPopup.PlacementTarget = target;
             PlaceInsideWindow(target);
-            KeyPopup.IsOpen = true;
+            Mapping.KeyPopup.IsOpen = true;
         }
         finally
         {
@@ -81,20 +82,20 @@ public partial class MainWindow : Window
     private void PlaceInsideWindow(Control target)
     {
         const double margin = 8;
-        var child = KeyPopup.Child;
+        var child = Mapping.KeyPopup.Child;
         if (child is null || target.TranslatePoint(new Point(0, 0), this) is not { } origin) return;
 
         child.Measure(Size.Infinity);
         Size size = child.DesiredSize;
         double below = Bounds.Height - (origin.Y + target.Bounds.Height);
         double above = origin.Y;
-        KeyPopup.Placement = below >= size.Height + margin || below >= above
+        Mapping.KeyPopup.Placement = below >= size.Height + margin || below >= above
             ? PlacementMode.Bottom
             : PlacementMode.Top;
 
         double centered = origin.X + target.Bounds.Width / 2 - size.Width / 2;
         double left = Math.Clamp(centered, margin, Math.Max(margin, Bounds.Width - size.Width - margin));
-        KeyPopup.HorizontalOffset = left - centered;
+        Mapping.KeyPopup.HorizontalOffset = left - centered;
     }
 
     /// <summary>Clicking outside the balloon (or Esc) closes it and unselects the key.</summary>

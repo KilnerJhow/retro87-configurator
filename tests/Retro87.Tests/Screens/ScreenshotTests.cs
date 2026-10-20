@@ -6,6 +6,7 @@ using Avalonia.Controls.Primitives;
 using Avalonia.Headless.XUnit;
 using Avalonia.VisualTree;
 using Retro87.Protocol;
+using Retro87.Views;
 
 namespace Retro87.Tests.Screens;
 
@@ -47,7 +48,7 @@ public sealed class ScreenshotTests
         using var screen = new ScreenHarness(language);
         screen.Select(screen.Key(keyName));
 
-        Popup popup = screen.Window.FindControl<Popup>("KeyPopup")!;
+        Popup popup = screen.Window.FindControl<MappingTab>("Mapping")!.KeyPopup;
         Assert.True(popup.IsOpen, "the popover did not open");
         screen.Save(Shot($"popover-{keyName}", language));
 
@@ -87,6 +88,29 @@ public sealed class ScreenshotTests
         Assert.Equal($"{percent}%", screen.ViewModel.BatteryText);
         Assert.InRange(screen.ViewModel.BatteryFillWidth, 0, 23);
         screen.Save(Shot($"battery-{percent}", language));
+    }
+
+    [AvaloniaTheory]
+    [InlineData("pt")]
+    [InlineData("en")]
+    public void Dialogs_cover_the_window_when_open(string language)
+    {
+        using var screen = new ScreenHarness(language);
+        screen.SelectTab(0);
+        var key = screen.Key("A");
+        key.SelectedTarget = key.Targets.First(t => t.Id != key.SelectedTarget?.Id);
+        screen.Settle();
+
+        screen.ViewModel.IsSaveDialogOpen = true;
+        screen.Settle();
+        screen.Save(Shot("dialog-save", language));
+        Assert.True(screen.Window.GetVisualDescendants().OfType<SaveDialog>().Single().IsEffectivelyVisible);
+        screen.ViewModel.IsSaveDialogOpen = false;
+
+        screen.ViewModel.IsNameDialogOpen = true;
+        screen.Settle();
+        screen.Save(Shot("dialog-name", language));
+        Assert.True(screen.Window.GetVisualDescendants().OfType<NameDialog>().Single().IsEffectivelyVisible);
     }
 
     [AvaloniaFact]

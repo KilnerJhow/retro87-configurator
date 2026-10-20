@@ -1,0 +1,153 @@
+<!-- SPDX-License-Identifier: GPL-3.0-or-later -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:vm="using:Retro87.ViewModels"
+             xmlns:loc="using:Retro87.Localization"
+             xmlns:m="using:Retro87.Models"
+             xmlns:svc="using:Retro87.Services"
+             xmlns:views="using:Retro87.Views"
+             xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
+             x:Class="Retro87.Views.MacrosTab"
+             x:DataType="vm:MainWindowViewModel">
+
+    <ScrollViewer>
+        <StackPanel Margin="8,12" Spacing="12">
+            <StackPanel Spacing="4">
+                <TextBlock Classes="h1" Text="{loc:T tab_macros}" />
+                <TextBlock Classes="hint" FontSize="12"
+                           Text="{loc:T macros_hint}" />
+            </StackPanel>
+
+            <Border Classes="note" IsVisible="{Binding IsMacrosEmpty}">
+                <StackPanel Spacing="4">
+                    <TextBlock Classes="dim" FontWeight="SemiBold" FontSize="12"
+                               Text="{loc:T nothing_read}" />
+                    <TextBlock Classes="muted" FontSize="12" TextWrapping="Wrap"
+                               Text="{loc:T macros_empty_hint}" />
+                </StackPanel>
+            </Border>
+
+            <ItemsControl ItemsSource="{Binding Macros}">
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate x:DataType="vm:MacroSlotViewModel">
+                        <Border Classes="card" Margin="0,0,0,10">
+                            <StackPanel Spacing="10">
+                                <!-- Empty slot: a single row instead of a whole form. -->
+                                <Grid ColumnDefinitions="Auto,*,Auto"
+                                      IsVisible="{Binding IsCollapsed}">
+                                    <TextBlock Grid.Column="0" Classes="key" FontWeight="SemiBold"
+                                               Text="{Binding SlotLabel}"
+                                               VerticalAlignment="Center" />
+                                    <TextBlock Grid.Column="1" Classes="muted" FontSize="12"
+                                               Margin="12,0" VerticalAlignment="Center"
+                                               Text="{loc:T empty}" />
+                                    <Button Grid.Column="2" Classes="tiny" Content="{loc:T create_macro}"
+                                            Command="{Binding EditCommand}"
+                                            AutomationProperties.Name="{Binding CreateName}" />
+                                </Grid>
+
+                                <Grid ColumnDefinitions="Auto,*,Auto,Auto,Auto,Auto,Auto"
+                                      IsVisible="{Binding IsEditing}">
+                                    <TextBlock Grid.Column="0" Classes="key" FontWeight="SemiBold"
+                                               Text="{Binding SlotLabel}"
+                                               VerticalAlignment="Center" Margin="0,0,14,0" />
+                                    <TextBox Grid.Column="1" Text="{Binding Name}" PlaceholderText="{loc:T macro_name_hint}"
+                                             MaxWidth="260" HorizontalAlignment="Left" />
+                                    <TextBlock Grid.Column="2" Classes="muted" Text="{loc:T cycles}"
+                                               VerticalAlignment="Center" Margin="16,0,8,0" />
+                                    <NumericUpDown Grid.Column="3" Value="{Binding Cycles}" Minimum="0"
+                                                   Maximum="255" FormatString="0" Width="118"
+                                                   ToolTip.Tip="{loc:T cycles_tip}" />
+                                    <TextBlock Grid.Column="4" Classes="muted" Text="{loc:T interval_ms}"
+                                               VerticalAlignment="Center" Margin="16,0,8,0" />
+                                    <NumericUpDown Grid.Column="5" Value="{Binding IntervalMs}" Minimum="0"
+                                                   Maximum="65535" FormatString="0" Width="132"
+                                                   ToolTip.Tip="{loc:T interval_tip}" />
+                                    <Button Grid.Column="6" Classes="ghost" Content="{loc:T collapse}"
+                                            Command="{Binding CollapseCommand}"
+                                            IsVisible="{Binding CanCollapse}"
+                                            AutomationProperties.Name="{Binding CollapseName}"
+                                            ToolTip.Tip="{loc:T collapse_tip}" />
+                                </Grid>
+
+                                <StackPanel Orientation="Horizontal" Spacing="8"
+                                            IsVisible="{Binding IsEditing}">
+                                    <Button Classes="tiny" Content="{loc:T add_press}"
+                                            Command="{Binding AddKeyDownCommand}" />
+                                    <Button Classes="tiny" Content="{loc:T add_release}"
+                                            Command="{Binding AddKeyUpCommand}" />
+                                    <Button Classes="tiny" Content="{loc:T add_wait}"
+                                            Command="{Binding AddDelayCommand}" />
+                                    <TextBlock Classes="muted" VerticalAlignment="Center"
+                                               Text="{Binding StepsText}" />
+                                </StackPanel>
+
+                                <ItemsControl ItemsSource="{Binding Steps}"
+                                              IsVisible="{Binding IsEditing}">
+                                    <ItemsControl.ItemTemplate>
+                                        <DataTemplate x:DataType="vm:MacroStepViewModel">
+                                            <Grid ColumnDefinitions="150,*,Auto,Auto,Auto" Margin="0,2">
+                                                <ComboBox Grid.Column="0" HorizontalAlignment="Stretch"
+                                                          ItemsSource="{Binding KindOptions}"
+                                                          SelectedItem="{Binding SelectedKind}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate x:DataType="vm:MacroKindOption">
+                                                            <TextBlock Text="{Binding Label}" />
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                                <ComboBox Grid.Column="1" Margin="8,0"
+                                                          HorizontalAlignment="Stretch"
+                                                          IsVisible="{Binding IsKeyStep}"
+                                                          ItemsSource="{Binding Targets}"
+                                                          SelectedItem="{Binding SelectedTarget}">
+                                                    <ComboBox.ItemTemplate>
+                                                        <DataTemplate x:DataType="m:MappingTarget">
+                                                            <Grid ColumnDefinitions="*,Auto">
+                                                                <TextBlock Grid.Column="0" Text="{Binding Name}" />
+                                                                <TextBlock Grid.Column="1"
+                                                                           Text="{Binding KindLabel}"
+                                                                           Classes="muted" FontSize="11"
+                                                                           Margin="14,0,0,0" />
+                                                            </Grid>
+                                                        </DataTemplate>
+                                                    </ComboBox.ItemTemplate>
+                                                </ComboBox>
+                                                <NumericUpDown Grid.Column="1" Margin="8,0" Width="150"
+                                                               HorizontalAlignment="Left"
+                                                               IsVisible="{Binding IsDelayStep}"
+                                                               Value="{Binding DelayMs}" Minimum="0"
+                                                               Maximum="65535" FormatString="0" />
+                                                <Button Grid.Column="2" Classes="icon"
+                                                        Command="{Binding MoveUpCommand}"
+                                                        AutomationProperties.Name="{loc:T move_step_up}"
+                                                        ToolTip.Tip="{loc:T move_up}">
+                                                    <Path Classes="iconGlyph"
+                                                          Data="M4 12l1.41 1.41L11 7.83V20h2V7.83l5.58 5.59L20 12l-8-8-8 8z" />
+                                                </Button>
+                                                <Button Grid.Column="3" Classes="icon"
+                                                        Command="{Binding MoveDownCommand}"
+                                                        AutomationProperties.Name="{loc:T move_step_down}"
+                                                        ToolTip.Tip="{loc:T move_down}">
+                                                    <Path Classes="iconGlyph"
+                                                          Data="M20 12l-1.41-1.41L13 16.17V4h-2v12.17l-5.58-5.59L4 12l8 8 8-8z" />
+                                                </Button>
+                                                <Button Grid.Column="4" Classes="icon"
+                                                        Command="{Binding RemoveCommand}"
+                                                        AutomationProperties.Name="{loc:T remove_the_step}"
+                                                        ToolTip.Tip="{loc:T remove_step}">
+                                                    <Path Classes="iconGlyph"
+                                                          Data="M19 6.41L17.59 5 12 10.59 6.41 5 5 6.41 10.59 12 5 17.59 6.41 19 12 13.41 17.59 19 19 17.59 13.41 12z" />
+                                                </Button>
+                                            </Grid>
+                                        </DataTemplate>
+                                    </ItemsControl.ItemTemplate>
+                                </ItemsControl>
+                            </StackPanel>
+                        </Border>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+        </StackPanel>
+    </ScrollViewer>
+</UserControl>
