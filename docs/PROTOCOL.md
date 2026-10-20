@@ -125,7 +125,7 @@ The keyboard collection (`hidraw` interface 1) exposes three input reports; the 
 
 ## Reproducing on hardware
 
-- Start with the read-only paths: `Retro87 --xbox-probe` and `Retro87 --report`.
+- Start with the read-only paths: `Retro87.Bench --xbox-probe` and `Retro87 --report`.
 - Every write probe has a `--plan` mode that only reads and prints the frames it would send.
 - A write probe reads back and undoes what it wrote; it only passes with **0 differences**
   against the backup. See [`../CONTRIBUTING.md`](../CONTRIBUTING.md).

@@ -13,9 +13,9 @@
 
 ## Hardware (when a device is available)
 
-- [ ] `Retro87 --xbox-probe` reads firmware/battery and the configuration summary.
+- [ ] `Retro87.Bench --xbox-probe` reads firmware/battery and the configuration summary.
 - [ ] `Retro87 --report` generates TOML without errors.
-- [ ] `Retro87 --xbox-write-test --plan` shows the plan without writing.
+- [ ] `Retro87.Bench --xbox-write-test --plan` shows the plan without writing.
 - [ ] A reversible write session ends with 0 differences from the backup.
 - [ ] Windows window with the keyboard: open, read, edit, write, and read back.
 - [ ] Linux window with the keyboard: same sequence (pending in 0.0.0).

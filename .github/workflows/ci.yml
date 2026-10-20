@@ -34,7 +34,7 @@ jobs:
 
       - name: Self-test (no hardware)
         shell: bash
-        run: dotnet src/Retro87/bin/Release/net8.0/Retro87.dll --selftest
+        run: dotnet run --project tools/Retro87.Bench -c Release --no-restore -- --selftest
 
       - name: Unit tests (no hardware)
         run: dotnet test tests/Retro87.Tests/Retro87.Tests.csproj -c Release --no-restore --nologo

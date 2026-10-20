@@ -81,10 +81,10 @@ The binary is in `src/Retro87/bin/Debug/net8.0/`. To check without hardware:
 pwsh ./scripts/verify.ps1    # Windows
 ```
 
-Or directly through the DLL (required on Windows because `WinExe` has no console of its own):
+Or directly (the app is `WinExe`, so on Windows run it through the DLL to get console output):
 
 ```bash
-dotnet src/Retro87/bin/Release/net8.0/Retro87.dll --selftest
+dotnet run --project tools/Retro87.Bench -c Release -- --selftest
 dotnet src/Retro87/bin/Release/net8.0/Retro87.dll --version
 dotnet src/Retro87/bin/Release/net8.0/Retro87.dll --help
 ```
@@ -112,9 +112,15 @@ broader access, so use it only for testing.
 |---|---|
 | `Retro87` | opens the window |
 | `--version`, `--help` | version and help |
-| `--selftest` | hardware-free model/protocol checks |
 | `--report [file.toml]` | **read-only** diagnostic report |
 | `--make-icon [app.ico]` | generates the app icon |
+
+Self-test and hardware probes live in `tools/Retro87.Bench` and run with
+`dotnet run --project tools/Retro87.Bench -- <option>`:
+
+| Command | Purpose |
+|---|---|
+| `--selftest` | hardware-free model/protocol checks |
 | `--xbox-probe` | reads firmware, battery, and configuration summary (read-only) |
 | `--xbox-input-probe [--seconds N]` | prints input reports from each HID collection (read-only) |
 | `--xbox-super-listen [--seconds N]` | identifies Super Buttons from HID reports, with port and target (read-only) |

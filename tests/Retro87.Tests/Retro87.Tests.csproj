@@ -22,6 +22,7 @@
 
   <ItemGroup>
     <ProjectReference Include="../../src/Retro87/Retro87.csproj" />
+    <ProjectReference Include="../../tools/Retro87.Bench/Retro87.Bench.csproj" />
   </ItemGroup>
 
   <ItemGroup>

@@ -13,7 +13,7 @@ run:
 
 # Build + self-test + xUnit tests, no hardware.
 test: build
-    dotnet src/Retro87/bin/Release/net8.0/Retro87.dll --selftest
+    dotnet run --project tools/Retro87.Bench -c Release -- --selftest
     dotnet test tests/Retro87.Tests/Retro87.Tests.csproj -c Release --nologo
 
 # The full CI gate: guards + build + self-test + xUnit tests.

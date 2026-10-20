@@ -5,14 +5,14 @@ $ErrorActionPreference = "Stop"
 
 $root = Split-Path -Parent $PSScriptRoot
 $project = Join-Path $root "src/Retro87/Retro87.csproj"
-$dll = Join-Path $root "src/Retro87/bin/Release/net8.0/Retro87.dll"
+$bench = Join-Path $root "tools/Retro87.Bench/Retro87.Bench.csproj"
 
 Write-Host "== dotnet build (Release) =="
 dotnet build $project -c Release --nologo
 if ($LASTEXITCODE -ne 0) { exit $LASTEXITCODE }
 
-Write-Host "== Retro87 --selftest =="
-$output = & dotnet $dll --selftest 2>&1
+Write-Host "== Retro87.Bench --selftest =="
+$output = & dotnet run --project $bench -c Release --nologo -- --selftest 2>&1
 $output | Write-Host
 $ok = ($output | Select-String -Pattern '^ok' -AllMatches).Count
 $fail = ($output | Select-String -Pattern '^FAIL' -AllMatches).Count

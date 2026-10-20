@@ -42,5 +42,6 @@
 
   <ItemGroup>
     <InternalsVisibleTo Include="Retro87.Tests" />
+    <InternalsVisibleTo Include="Retro87.Bench" />
   </ItemGroup>
 </Project>

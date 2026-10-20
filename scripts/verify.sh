@@ -33,9 +33,9 @@ if [[ "$NO_BUILD" -eq 0 ]]; then
 fi
 
 LOG="${TMPDIR:-/tmp}/retro87-selftest.log"
-echo "== Retro87 --selftest =="
+echo "== Retro87.Bench --selftest =="
 set +e
-"$DOTNET_BIN" "$ROOT/src/Retro87/bin/Release/net8.0/Retro87.dll" --selftest >"$LOG" 2>&1
+"$DOTNET_BIN" run --project "$ROOT/tools/Retro87.Bench" -c Release --nologo -- --selftest >"$LOG" 2>&1
 rc=$?
 set -e
 

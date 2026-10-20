@@ -7,6 +7,10 @@ adheres to [Semantic Versioning](https://semver.org/). The first version is `0.0
 
 ## [Unreleased]
 
+### Changed
+
+- The self-test, the bench probes (`--xbox-*`) and the simulated devices moved out of the app into `tools/Retro87.Bench`. Run them with `dotnet run --project tools/Retro87.Bench -- --selftest`. The app itself only keeps `--version`, `--help`, `--report` and `--make-icon`.
+
 ### Added
 
 - Battery level in the header, next to the keyboard name: drawn battery icon plus percent, green from 40%, amber from 15%, red below. Shown only when the family reports it (Xbox).

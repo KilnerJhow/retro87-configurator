@@ -39,31 +39,30 @@ dotnet run                       # opens the window
 The binary is in `bin/Debug/net8.0/`. Run the self-test through the **DLL**:
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --selftest
+dotnet run --project ../../tools/Retro87.Bench -- --selftest
 # expected: SELFTEST PASSED, no FAIL
 ```
 
 On Windows this is required (`WinExe` has no console of its own, so the `.exe` prints nothing).
-On Linux the executable also works: `./bin/Debug/net8.0/Retro87 --selftest`.
 
 The self-test covers layout tables, the payload ↔ id codec, UTF-16 names, macro body/chunking,
 record decoding, profile round-trips, and editor view-models — all **without hardware**.
 It also includes a **protocol dry run**: `JpProtocol` is exercised end to end against a simulated
-keyboard (`Protocol/FakeKeyboardDevice.cs`) — reading a device configured "externally", writing
+keyboard (`tools/Retro87.Bench/Protocol/FakeKeyboardDevice.cs`) — reading a device configured "externally", writing
 to a new device, and reading back for comparison, plus failure paths (lost frame, response to
 another command, no ACK). There are ~383 checks; it takes a few seconds (the protocol uses `Sleep`).
 
 **Read-only** hardware probe for the Retro 87 "X" (**Xbox** family, PID 0x2028/0x202E):
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-probe
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-probe
 # lists HID collections, finds the vendor collection (out=64), prints firmware/battery + config summary
 ```
 
 **Identify a Super Button through HID reports** (without the window; shows port and target):
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-super-listen --seconds 30
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-super-listen --seconds 30
 # press the buttons; each line shows the target, port (A/B/X/Y), and Super Button
 ```
 
@@ -76,10 +75,10 @@ to everything). The app sends the same wake *handshake* as the official software
 on connection and reads again after failure; to exercise that frame manually:
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-wake --plan     # ONLY prints the frame (nothing sent)
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-wake            # sends wake and reports responses
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-wake --force    # sends wake even if already awake
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-wake --watch 15 # waits silently for 15 min, tests recovery
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-wake --plan     # ONLY prints the frame (nothing sent)
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-wake            # sends wake and reports responses
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-wake --force    # sends wake even if already awake
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-wake --watch 15 # waits silently for 15 min, tests recovery
 ```
 
 > **Important (measured on 2026-10-18):** when the keyboard **loses the link** — dongle removed,
@@ -92,7 +91,7 @@ To measure this behavior (`--gap` is how long the dongle stays unplugged; `--ins
 wake every 500 ms):
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-link-test --gap 60 --insist 20
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-link-test --gap 60 --insist 20
 # asks you to unplug the dongle, waits, asks you to replug, and probes immediately — read-only
 ```
 
@@ -100,9 +99,9 @@ dotnet bin/Debug/net8.0/Retro87.dll --xbox-link-test --gap 60 --insist 20
 frames before anything else):
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-write-test --plan   # READ ONLY: backup + exact frames
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-write-test          # runs, checks each step, and undoes
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-restore <backup.bin> # restores the 1532 bytes of a backup
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-write-test --plan   # READ ONLY: backup + exact frames
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-write-test          # runs, checks each step, and undoes
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-restore <backup.bin> # restores the 1532 bytes of a backup
 ```
 
 The test selects a harmless key from the device's actual state (Scroll Lock, Pause, PrtSc, Ins,
@@ -114,8 +113,8 @@ writing to the keyboard). This is how writing was validated on hardware (`docs/P
 **Macro** write test (`cmd 0x05`/`0x06`), also reversible and requiring authorization:
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-macro-test --plan   # READ ONLY: 10-slot table + plan + frames
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-macro-test          # writes an empty slot, reads back, undoes
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-macro-test --plan   # READ ONLY: 10-slot table + plan + frames
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-macro-test          # writes an empty slot, reads back, undoes
 ```
 
 It reads the ten slots with `cmd 0x07`, selects a harmless key and the first **empty slot ≥ 1**
@@ -126,8 +125,8 @@ differences** in the 1532 B and all slots in their original state (`docs/PROTOCO
 **Profile name** and **single-byte** test (`volume_lv@0x5C9`), also reversible:
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-config-test --plan  # READ ONLY: current name/byte + frames
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-config-test         # writes (32 B UTF-16BE + 1 byte), checks, undoes
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-config-test --plan  # READ ONLY: current name/byte + frames
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-config-test         # writes (32 B UTF-16BE + 1 byte), checks, undoes
 ```
 
 It writes the byte first with its own value (no-op), then with the alternative (`1..2`, the
@@ -137,8 +136,8 @@ back, and undoes — requiring **0 differences** from the backup (`docs/PROTOCOL
 **Media and mouse target** test (what a key emits), through the UI path:
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-media-test --plan  # READ ONLY: current record + frames
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-media-test         # Play (MKEY) and Left_Click (MOUSE), checks, undoes
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-media-test --plan  # READ ONLY: current record + frames
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-media-test         # Play (MKEY) and Left_Click (MOUSE), checks, undoes
 ```
 
 It uses the first harmless key that also has a position in the UI table, prefers `Play` (`0xCD`,
@@ -153,8 +152,8 @@ it catches wrong offsets or broken chunks in the port, but the real keyboard ses
 **Settings tab fields** test (volume and Quick Setup), through the UI path:
 
 ```bash
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-ui-config-test --plan  # READ ONLY: current values + frames
-dotnet bin/Debug/net8.0/Retro87.dll --xbox-ui-config-test         # writes, checks, and undoes
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-ui-config-test --plan  # READ ONLY: current values + frames
+dotnet run --project ../../tools/Retro87.Bench -- --xbox-ui-config-test         # writes, checks, and undoes
 ```
 
 It writes **volume** (`volume_lv@0x5C9`, 1→3) and **Quick Setup** (`fast_setting@0x5C8`, enabling
@@ -256,9 +255,9 @@ top, and the status bar always shows the last action. To review a visual change,
 
 | Directory | Contents |
 | --- | --- |
-| `Protocol/` | JP framing and commands (`JpProtocol`, `JpWire`), HID transport, simulated dry-run keyboard |
+| `Protocol/` | JP framing and commands (`JpProtocol`, `JpWire`), HID transport |
 | `Models/` | mapping tables, payload codec, layout, target catalog, models |
 | `Services/` | device monitor, local profiles, firmware notification |
 | `ViewModels/`, `Views/` | interface MVVM |
 | `linux/` | udev rule |
-| `SelfTest.cs` | hardware-free self-test (`--selftest`) |
+| `../../tools/Retro87.Bench/` | hardware-free self-test (`--selftest`), bench probes and simulated devices |
