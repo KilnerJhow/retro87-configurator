@@ -2,6 +2,7 @@
 
 using Avalonia.Input;
 using Retro87.Models;
+using Retro87.ViewModels;
 
 namespace Retro87.Tests;
 

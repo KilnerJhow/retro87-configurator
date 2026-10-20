@@ -1,8 +1,9 @@
 // SPDX-License-Identifier: GPL-3.0-or-later
 
 using Avalonia.Input;
+using Retro87.Models;
 
-namespace Retro87.Models;
+namespace Retro87.ViewModels;
 
 /// <summary>
 /// Translates the key the user pressed into the mapping id the keyboard uses for the same target,
