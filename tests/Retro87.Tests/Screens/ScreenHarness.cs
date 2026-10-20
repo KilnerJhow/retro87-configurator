@@ -75,7 +75,7 @@ internal sealed class ScreenHarness : IDisposable
         Settle();
         using WriteableBitmapHolder frame = new(Window);
         Directory.CreateDirectory(Path.GetDirectoryName(Path.GetFullPath(path))!);
-        frame.Bitmap.Save(path);
+        frame.Bitmap.Save(path, new Avalonia.Media.Imaging.PngBitmapEncoderOptions());
     }
 
     public void Dispose() => Window.Close();

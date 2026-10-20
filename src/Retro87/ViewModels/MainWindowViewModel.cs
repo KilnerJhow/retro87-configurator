@@ -2881,13 +2881,13 @@ public partial class MainWindowViewModel : ObservableObject
             {
                 UpdateAvailable = true;
                 UpdateSeverity = StatusSeverity.Warning;
-                string text = Loc.F("st_update_available", result.ServerVersion, result.DeviceVersion);
+                string text = Loc.F("st_update_available", result.ServerVersion ?? "?", result.DeviceVersion ?? "?");
                 UpdateMessage = text;
                 SetStatus(StatusSeverity.Warning, text);
             }
             else
             {
-                SetStatus(StatusSeverity.Success, Loc.F("st_firmware_ok", result.DeviceVersion));
+                SetStatus(StatusSeverity.Success, Loc.F("st_firmware_ok", result.DeviceVersion ?? "?"));
             }
         }
         catch (Exception ex)

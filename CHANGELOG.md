@@ -53,6 +53,8 @@ adheres to [Semantic Versioning](https://semver.org/). The first version is `0.0
 
 ### Changed
 
+- Dependencies updated: Avalonia 12.1.4, CommunityToolkit.Mvvm 8.4.2, HidSharp 2.6.4, `Svg.Controls.Skia.Avalonia` 12 (replaces `Avalonia.Svg.Skia`) and the GitHub Actions `checkout` 7 and `setup-dotnet` 6. Building now needs the .NET 10 SDK (Avalonia 12 requires its compiler); the app still targets .NET 8.
+- Tests moved to xUnit v3 (required by Avalonia.Headless.XUnit 12); build and test warnings fixed.
 - Reorganized tabs: Mapping (first and initially open), Macros, Settings, Profiles, About the keyboard.
 - The key editor is a popover next to the key, replacing the side panel. Super Buttons sit next
   to the ports. The "modified" dot was removed from the key (the amber border is enough).

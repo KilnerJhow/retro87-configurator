@@ -14,7 +14,7 @@ are part of its safety contract, not bureaucracy.
 
 ## Environment
 
-- .NET 8 SDK (`dotnet --version` should show 8.x).
+- .NET 10 SDK (`dotnet --version` should show 10.x); the app itself targets .NET 8.
 - Linux: `hidraw` + the [`packaging/linux/70-8bitdo.rules`](packaging/linux/70-8bitdo.rules) rule.
 - Windows: builds and probes work; `WinExe` has no console, so use the DLL for the CLI.
 

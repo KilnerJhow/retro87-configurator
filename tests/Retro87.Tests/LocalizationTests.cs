@@ -38,7 +38,7 @@ public sealed class LocalizationTests
 
         Assert.NotEmpty(used);
         // Keys ending in "_" are prefixes completed in code (see the test below).
-        Assert.Empty(used.Where(key => !key.EndsWith('_') && !Strings.Table.ContainsKey(key)));
+        Assert.All(used.Where(key => !key.EndsWith('_')), key => Assert.True(Strings.Table.ContainsKey(key), $"missing string: {key}"));
     }
 
     [Fact]

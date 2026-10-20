@@ -17,11 +17,14 @@ jobs:
       matrix:
         os: [ubuntu-latest, windows-latest]
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/setup-dotnet@v6
         with:
-          dotnet-version: 8.0.x
+          # 10.x builds (Avalonia 12 needs its compiler); 8.x is the runtime the app targets.
+          dotnet-version: |
+            8.0.x
+            10.0.x
 
       - name: Restore
         run: dotnet restore tests/Retro87.Tests/Retro87.Tests.csproj
@@ -40,7 +43,7 @@ jobs:
     name: repository guards
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Vendor artifacts must not be tracked
         run: ./scripts/check_vendor_artifacts.sh

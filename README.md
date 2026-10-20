@@ -54,7 +54,7 @@ Per-operation details in [`docs/SUPPORT_MATRIX.md`](docs/SUPPORT_MATRIX.md).
 ## Requirements
 
 - Windows 10/11 or Linux with `hidraw` and udev.
-- [.NET 8 SDK](https://dotnet.microsoft.com/download/dotnet/8.0) to build.
+- [.NET 10 SDK](https://dotnet.microsoft.com/download/dotnet/10.0) to build (the app still targets .NET 8; Avalonia 12 needs the newer compiler).
 - Retro 87 keyboard (VID `0x2DC8`) connected by cable or the 2.4 G dongle.
 
 ## Build and run

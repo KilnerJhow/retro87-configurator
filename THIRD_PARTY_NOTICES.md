@@ -12,7 +12,7 @@ notes the bundled assets. The full license text of each package is included in i
 | Avalonia.Fonts.Inter | MIT (package) | embeds the **Inter** font family, licensed under SIL OFL 1.1 |
 | CommunityToolkit.Mvvm | MIT | MVVM helpers |
 | HidSharp | Apache-2.0 | cross-platform HID transport |
-| Avalonia.Svg.Skia | MIT | rendering original SVG artwork |
+| Svg.Controls.Skia.Avalonia | MIT | rendering original SVG artwork |
 | SkiaSharp / Svg.Skia | MIT | transitive dependencies of the SVG renderer |
 
 Transitive dependencies of Avalonia (for example SkiaSharp, HarfBuzzSharp and MicroCom) are also

@@ -6,7 +6,7 @@
         xmlns:m="using:Retro87.Models"
         xmlns:svc="using:Retro87.Services"
         xmlns:views="using:Retro87.Views"
-        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Avalonia.Svg.Skia"
+        xmlns:svg="clr-namespace:Avalonia.Svg.Skia;assembly=Svg.Controls.Skia.Avalonia"
         x:Class="Retro87.Views.MainWindow"
         x:DataType="vm:MainWindowViewModel"
         Title="{loc:T window_title}"
@@ -502,7 +502,7 @@
                                                 <TextBlock Grid.Column="0" Classes="key" FontWeight="SemiBold"
                                                            Text="{Binding SlotLabel}"
                                                            VerticalAlignment="Center" Margin="0,0,14,0" />
-                                                <TextBox Grid.Column="1" Text="{Binding Name}" Watermark="{loc:T macro_name_hint}"
+                                                <TextBox Grid.Column="1" Text="{Binding Name}" PlaceholderText="{loc:T macro_name_hint}"
                                                          MaxWidth="260" HorizontalAlignment="Left" />
                                                 <TextBlock Grid.Column="2" Classes="muted" Text="{loc:T cycles}"
                                                            VerticalAlignment="Center" Margin="16,0,8,0" />
@@ -919,7 +919,7 @@
                 <StackPanel Spacing="6" IsVisible="{Binding NameDialogHasInput}">
                     <TextBlock Classes="section" Text="{loc:T name_header}" Margin="0" />
                     <TextBox Text="{Binding NameDialogInput}" MaxLength="{Binding ProfileNameMaxLength}"
-                             Watermark="{loc:T name_hint}" AutomationProperties.Name="{loc:T profile_name}" />
+                             PlaceholderText="{loc:T name_hint}" AutomationProperties.Name="{loc:T profile_name}" />
                     <TextBlock Foreground="{StaticResource Danger}" FontSize="12" Text="{Binding NameDialogError}"
                                IsVisible="{Binding NameDialogError, Converter={x:Static StringConverters.IsNotNullOrEmpty}}" />
                 </StackPanel>
