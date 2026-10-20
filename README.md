@@ -3,6 +3,10 @@
 **Unofficial** configurator for the **8BitDo Retro 87 / Retro 87 "X"** keyboard on Windows and Linux.
 Talks directly to the keyboard's HID interface, without Ultimate Software V2 or requiring Windows.
 
+**Not affiliated with 8BitDo.** This is an independent, unofficial project. It is not endorsed
+or sponsored by 8BitDo. 8BitDo and Retro 87 are trademarks of their respective owners, used here
+only to say which keyboard the software works with.
+
 > ⚠️ **AI disclosure — "vibe coded".** This project was developed **almost entirely by AI**
 > (agents in OpenCode), under human direction. The code may contain errors, including protocol
 > errors that affect the keyboard. Review it, back up your configuration, and use it at your own
