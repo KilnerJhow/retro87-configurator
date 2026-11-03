@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <PackageReference Include="Avalonia.Skia" Version="12.1.5" />
     <InternalsVisibleTo Include="Retro87.Tests" />
   </ItemGroup>
 </Project>
